@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AC Field Service Management</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <button class="menu-toggle" type="button" aria-label="Open menu">
+        <span></span><span></span><span></span>
+    </button>
+    <div class="sidebar-overlay" aria-hidden="true"></div>
+    <div class="app">
+        <aside class="sidebar">
+            <a href="#" class="logo" data-view="dashboard">AC Service</a>
+            <nav class="side-nav">
+                <a href="#" class="nav-item active" data-view="dashboard"><span class="icon">📊</span>Dashboard</a>
+                <a href="#" class="nav-item" data-view="technicians"><span class="icon">👷</span>Technicians</a>
+                <a href="#" class="nav-item" data-view="attendance"><span class="icon">✓</span>Attendance</a>
+                <a href="#" class="nav-item" data-view="leaves"><span class="icon">📅</span>Leave</a>
+                <a href="#" class="nav-item" data-view="jobs"><span class="icon">🔧</span>Jobs</a>
+                <a href="#" class="nav-item" data-view="payroll"><span class="icon">💰</span>Payroll</a>
+                <a href="#" class="nav-item" data-view="reports"><span class="icon">📈</span>Reports</a>
+                <a href="#" class="nav-item" data-view="branches"><span class="icon">🏢</span>Branches</a>
+                <a href="#" class="nav-item" data-view="inventory"><span class="icon">📦</span>Inventory</a>
+                <a href="#" class="nav-item" data-view="settings"><span class="icon">⚙</span>Settings</a>
+            </nav>
+            <div class="sidebar-footer">
+                <p class="current-date"></p>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <!-- 1. DASHBOARD -->
+            <section id="view-dashboard" class="view active">
+                <div class="page-header">
+                    <h1>Dashboard</h1>
+                    <p>Overview of technicians, attendance, and service schedule</p>
+                </div>
+                <div class="stats-grid">
+                    <div class="stat-card"><span class="stat-label">Total Technicians</span><span class="stat-value" id="d-total-tech">0</span></div>
+                    <div class="stat-card present"><span class="stat-label">Present Today</span><span class="stat-value" id="d-present">0</span></div>
+                    <div class="stat-card absent"><span class="stat-label">Absent Today</span><span class="stat-value" id="d-absent">0</span></div>
+                    <div class="stat-card jobs"><span class="stat-label">On Site Jobs</span><span class="stat-value" id="d-onsite">0</span></div>
+                    <div class="stat-card jobs"><span class="stat-label">Pending Jobs</span><span class="stat-value" id="d-pending">0</span></div>
+                </div>
+                <div class="dashboard-grid">
+                    <div class="card">
+                        <h3>Quick Attendance Summary</h3>
+                        <div id="dash-att-summary" class="summary-list"></div>
+                    </div>
+                    <div class="card">
+                        <h3>Today's Service Schedule</h3>
+                        <div id="dash-schedule" class="schedule-list"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 2. TECHNICIANS -->
+            <section id="view-technicians" class="view">
+                <div class="page-header">
+                    <h1>Technician Management</h1>
+                    <p>Add, edit, and manage technicians</p>
+                    <button class="btn-primary" id="btn-add-technician">+ Add Technician</button>
+                </div>
+                <div class="card">
+                    <div id="technician-list" class="data-table"></div>
+                </div>
+            </section>
+
+            <!-- 3. ATTENDANCE -->
+            <section id="view-attendance" class="view">
+                <div class="page-header">
+                    <h1>Attendance</h1>
+                    <p>Check-in/Check-out with time tracking</p>
+                </div>
+                <div class="attendance-section">
+                    <div class="date-picker-row">
+                        <label>Date: <input type="date" id="att-date"></label>
+                    </div>
+                    <div class="card">
+                        <h3>Mark Attendance (Check-In / Check-Out)</h3>
+                        <div id="attendance-tech-list"></div>
+                    </div>
+                    <div class="card">
+                        <h3>Daily Attendance View</h3>
+                        <div id="daily-attendance-view"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 4. LEAVES -->
+            <section id="view-leaves" class="view">
+                <div class="page-header">
+                    <h1>Leave Management</h1>
+                    <p>Apply, approve, and track leaves</p>
+                    <button class="btn-primary" id="btn-apply-leave">Apply Leave</button>
+                </div>
+                <div class="card">
+                    <h3>Leave History</h3>
+                    <div id="leave-history-list"></div>
+                </div>
+                <div class="card">
+                    <h3>Leave Balance by Technician</h3>
+                    <div id="leave-balance-list"></div>
+                </div>
+            </section>
+
+            <!-- 5. JOBS -->
+            <section id="view-jobs" class="view">
+                <div class="page-header">
+                    <h1>Job / Service Assignment</h1>
+                    <p>Create service requests and assign technicians</p>
+                    <button class="btn-primary" id="btn-create-job">Create Service Request</button>
+                </div>
+                <div class="card">
+                    <div id="job-list" class="data-table"></div>
+                </div>
+            </section>
+
+            <!-- 6. PAYROLL -->
+            <section id="view-payroll" class="view">
+                <div class="page-header">
+                    <h1>Salary & Payroll</h1>
+                    <p>Attendance-based salary, overtime, payslips</p>
+                </div>
+                <div class="card">
+                    <h3>Payroll Records</h3>
+                    <div id="payroll-list"></div>
+                </div>
+            </section>
+
+            <!-- 7. REPORTS -->
+            <section id="view-reports" class="view">
+                <div class="page-header">
+                    <h1>Reports</h1>
+                    <p>Attendance, performance, and service reports</p>
+                </div>
+                <div class="reports-grid">
+                    <div class="card">
+                        <h3>Daily Attendance Report</h3>
+                        <input type="date" id="report-daily-date">
+                        <button class="btn-secondary" id="btn-daily-report">Generate</button>
+                        <div id="report-daily"></div>
+                    </div>
+                    <div class="card">
+                        <h3>Monthly Attendance Report</h3>
+                        <input type="month" id="report-monthly">
+                        <button class="btn-secondary" id="btn-monthly-report">Generate</button>
+                        <div id="report-monthly"></div>
+                    </div>
+                </div>
+                <div class="card">
+                    <h3>Download Reports</h3>
+                    <button class="btn-secondary" id="btn-export-excel">Export to Excel (CSV)</button>
+                    <button class="btn-secondary" id="btn-export-pdf">Export to PDF</button>
+                </div>
+            </section>
+
+            <!-- 8. BRANCHES -->
+            <section id="view-branches" class="view">
+                <div class="page-header">
+                    <h1>Branch Management</h1>
+                    <p>Manage branches and locations</p>
+                    <button class="btn-primary" id="btn-add-branch">+ Add Branch</button>
+                </div>
+                <div class="card">
+                    <div id="branch-list"></div>
+                </div>
+            </section>
+
+            <!-- 9. INVENTORY -->
+            <section id="view-inventory" class="view">
+                <div class="page-header">
+                    <h1>Inventory</h1>
+                    <p>AC units, gas cylinders, spare parts, tools issued to technicians</p>
+                </div>
+                <div class="inventory-grid">
+                    <div class="card"><h3>AC Units Stock</h3><div class="add-row"><input type="text" id="inv-ac-name" placeholder="Name"><input type="number" id="inv-ac-qty" placeholder="Qty" min="1"><button class="btn-secondary btn-small" id="btn-add-ac">Add</button></div><div id="inv-ac"></div></div>
+                    <div class="card"><h3>Gas Cylinders</h3><div class="add-row"><input type="text" id="inv-gas-name" placeholder="Name"><input type="number" id="inv-gas-qty" placeholder="Qty" min="1"><button class="btn-secondary btn-small" id="btn-add-gas">Add</button></div><div id="inv-gas"></div></div>
+                    <div class="card"><h3>Spare Parts</h3><div class="add-row"><input type="text" id="inv-parts-name" placeholder="Part name"><input type="number" id="inv-parts-qty" placeholder="Qty" min="1"><button class="btn-secondary btn-small" id="btn-add-parts">Add</button></div><div id="inv-parts"></div></div>
+                    <div class="card"><h3>Tools Issued</h3><div class="add-row"><input type="text" id="inv-tools-name" placeholder="Tool"><select id="inv-tools-tech"></select><button class="btn-secondary btn-small" id="btn-add-tools">Add</button></div><div id="inv-tools"></div></div>
+                </div>
+            </section>
+
+            <!-- 10. SETTINGS -->
+            <section id="view-settings" class="view">
+                <div class="page-header">
+                    <h1>Settings</h1>
+                    <p>Company, roles, working hours, holidays</p>
+                </div>
+                <div class="settings-form">
+                    <div class="card">
+                        <h3>Company Details</h3>
+                        <div class="form-row">
+                            <label>Company Name <input type="text" id="set-company-name" placeholder="Company name"></label>
+                            <label>Address <input type="text" id="set-company-addr" placeholder="Address"></label>
+                            <label>Phone <input type="text" id="set-company-phone" placeholder="Phone"></label>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <h3>Working Hours</h3>
+                        <label>Start <input type="time" id="set-work-start"></label>
+                        <label>End <input type="time" id="set-work-end"></label>
+                        <label>Late Threshold (min) <input type="number" id="set-late-thresh" min="0"></label>
+                    </div>
+                    <div class="card">
+                        <h3>Holiday List</h3>
+                        <div class="add-holiday">
+                            <input type="date" id="holiday-date">
+                            <input type="text" id="holiday-name" placeholder="Holiday name">
+                            <button class="btn-secondary" id="btn-add-holiday">Add</button>
+                        </div>
+                        <ul id="holiday-list"></ul>
+                    </div>
+                    <button class="btn-primary" id="btn-save-settings">Save Settings</button>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Modals -->
+    <div id="modal-overlay" class="modal-overlay">
+        <div id="modal-technician" class="modal">
+            <h3>Add/Edit Technician</h3>
+            <input type="hidden" id="tech-id">
+            <label>Name <input type="text" id="tech-name" required></label>
+            <label>Phone <input type="tel" id="tech-phone"></label>
+            <label>Role <select id="tech-role"><option>Technician</option><option>Senior Technician</option><option>Supervisor</option></select></label>
+            <label>Experience (years) <input type="number" id="tech-exp" min="0"></label>
+            <label>Branch <select id="tech-branch"></select></label>
+            <label>ID Card No <input type="text" id="tech-idcard"></label>
+            <div class="modal-actions">
+                <button class="btn-primary" id="btn-save-tech">Save</button>
+                <button class="btn-secondary" id="btn-cancel-tech">Cancel</button>
+            </div>
+        </div>
+        <div id="modal-job" class="modal">
+            <h3>Create/Edit Service Request</h3>
+            <input type="hidden" id="job-id">
+            <label>Customer Name <input type="text" id="job-customer"></label>
+            <label>Address <input type="text" id="job-address"></label>
+            <label>Phone <input type="tel" id="job-phone"></label>
+            <label>Service Type <select id="job-type"><option>Installation</option><option>Gas Charging</option><option>Maintenance</option><option>Repair</option></select></label>
+            <label>Scheduled Date <input type="date" id="job-date"></label>
+            <label>Assign Technician <select id="job-technician"></select></label>
+            <label>Status <select id="job-status"><option>Pending</option><option>In Progress</option><option>Completed</option></select></label>
+            <div class="modal-actions">
+                <button class="btn-primary" id="btn-save-job">Save</button>
+                <button class="btn-secondary" id="btn-cancel-job">Cancel</button>
+            </div>
+        </div>
+        <div id="modal-leave" class="modal">
+            <h3>Apply Leave</h3>
+            <input type="hidden" id="leave-id">
+            <label>Technician <select id="leave-technician"></select></label>
+            <label>Leave Type <select id="leave-type"><option>Sick Leave</option><option>Casual Leave</option></select></label>
+            <label>From <input type="date" id="leave-from"></label>
+            <label>To <input type="date" id="leave-to"></label>
+            <label>Reason <textarea id="leave-reason"></textarea></label>
+            <label>Status (Admin) <select id="leave-status"><option>Pending</option><option>Approved</option><option>Rejected</option></select></label>
+            <div class="modal-actions">
+                <button class="btn-primary" id="btn-save-leave">Save</button>
+                <button class="btn-secondary" id="btn-cancel-leave">Cancel</button>
+            </div>
+        </div>
+        <div id="modal-branch" class="modal">
+            <h3>Add/Edit Branch</h3>
+            <input type="hidden" id="branch-id">
+            <label>Branch Name <input type="text" id="branch-name"></label>
+            <label>Address <input type="text" id="branch-address"></label>
+            <div class="modal-actions">
+                <button class="btn-primary" id="btn-save-branch">Save</button>
+                <button class="btn-secondary" id="btn-cancel-branch">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/data.js"></script>
+    <script src="js/script.js"></script>
+</body>
+</html>
